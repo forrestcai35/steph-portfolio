@@ -121,7 +121,7 @@ export function Photos() {
                 className="w-full h-full object-cover"
               />
               {isSelecting && (
-                <div className={cn("absolute inset-0 bg-black/20", selectedPhotos.has(photo.id) && "bg-blue-500/20")}>
+                <div className={cn("absolute inset-0 bg-black/20", selectedPhotos.has(photo.id) ? "bg-blue-500/20" : "")}>
                   <div
                     className={cn(
                       "absolute top-2 right-2 w-5 h-5 rounded-full border-2",

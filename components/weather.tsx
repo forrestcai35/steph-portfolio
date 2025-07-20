@@ -3,8 +3,21 @@
 import { useState, useEffect } from "react"
 import { Widget } from "./Widget"
 
+interface WeatherData {
+  name: string
+  main: {
+    temp: number
+    temp_max: number
+    temp_min: number
+  }
+  weather: Array<{
+    icon: string
+    description: string
+  }>
+}
+
 export function Weather() {
-  const [weatherData, setWeatherData] = useState(null)
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null)
 
   useEffect(() => {
     const fetchWeatherData = async () => {

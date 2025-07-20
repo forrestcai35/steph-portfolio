@@ -215,6 +215,7 @@ export function NotesApp() {
         onBack={handleBackToFolders}
         onNoteClick={handleNoteClick}
         onCreateNote={handleCreateNote}
+        onDeleteNote={(note) => handleDeleteNote(note.id)}
       />
     )
   }
