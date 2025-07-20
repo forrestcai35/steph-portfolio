@@ -2,13 +2,14 @@
 
 import { useState } from "react"
 import { HomeScreen } from "./home-screen"
-import { AppScreen } from "./app-screen"
+import { AppView } from "./app-screen"
 import { MusicIsland } from "./dynamic-island/music-island"
 import { PersistentAudioPlayer } from "./persistent-audio-player"
-import type { AppName } from "@/lib/types"
+import { useAppState } from "@/lib/app-state"
 
 export function IPhone() {
-  const [activeApp, setActiveApp] = useState<AppName | null>(null)
+  const [time] = useState(new Date())
+  const { currentApp } = useAppState()
 
   return (
     <div className="relative w-[375px] h-[812px] bg-black rounded-[55px] overflow-hidden">
@@ -28,10 +29,10 @@ export function IPhone() {
 
       {/* Screen Content */}
       <div className="relative w-full h-full bg-[#f6f6f6] overflow-hidden">
-        {activeApp ? (
-          <AppScreen app={activeApp} onClose={() => setActiveApp(null)} />
+        {currentApp ? (
+          <AppView appId={currentApp} />
         ) : (
-          <HomeScreen onAppClick={setActiveApp} />
+          <HomeScreen time={time} />
         )}
       </div>
     </div>
