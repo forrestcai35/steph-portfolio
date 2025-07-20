@@ -31,7 +31,7 @@ export function ChatView() {
       sender: "you",
       content: input,
       timestamp: Date.now(),
-      currentSong,
+      currentSong: currentSong || undefined,
     }
 
     setMessages([...messages, userMessage])
@@ -44,7 +44,7 @@ export function ChatView() {
         sender: "MusicBot",
         content: getBotResponse(input),
         timestamp: Date.now(),
-        currentSong,
+        currentSong: currentSong || undefined,
       }
       setMessages((prev) => [...prev, botMessage])
     }, 1000)
