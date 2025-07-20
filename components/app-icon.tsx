@@ -12,10 +12,19 @@ interface AppIconProps {
   icon?: string | ReactNode
   customIcon?: ReactNode
   size?: "normal" | "small"
+  externalUrl?: string
 }
 
-export function AppIcon({ id, name, color, icon, customIcon, size = "normal" }: AppIconProps) {
+export function AppIcon({ id, name, color, icon, customIcon, size = "normal", externalUrl }: AppIconProps) {
   const { openApp } = useAppState()
+
+  const handleClick = () => {
+    if (externalUrl) {
+      window.open(externalUrl, '_blank')
+    } else {
+      openApp(id)
+    }
+  }
 
   const renderIcon = () => {
     const svgIcons = [
@@ -39,6 +48,7 @@ export function AppIcon({ id, name, color, icon, customIcon, size = "normal" }: 
       "news",
       "tv",
       "notes",
+      "spotify",
     ]
 
     if (svgIcons.includes(id)) {
@@ -77,7 +87,7 @@ export function AppIcon({ id, name, color, icon, customIcon, size = "normal" }: 
       <motion.div
         className={`app-icon ${color}`}
         whileTap={{ scale: 0.9 }}
-        onClick={() => openApp(id)}
+        onClick={handleClick}
         onTouchStart={(e) => e.stopPropagation()}
         style={{
           width: size === "small" ? "100%" : "60px",

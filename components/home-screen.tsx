@@ -30,7 +30,7 @@ export function HomeScreen({ time }: HomeScreenProps) {
       "phone",
       "safari",
       "messages",
-      "music",
+      "spotify"
     ]
 
     preloadIcons.forEach((icon) => {
@@ -111,8 +111,7 @@ export function HomeScreen({ time }: HomeScreenProps) {
                   title="Experiences"
                   content={
                     <div className="text-white">
-                      <div className="text-sm font-medium">Work & Internships</div>
-                      <div className="text-4xl font-light my-2">3+</div>
+                      <div className="text-sm font-medium">Axlora</div>
                       <div className="flex items-center gap-1 mt-1">
                         <span className="text-yellow-300 text-lg">💼</span>
                         <span className="text-sm">Years Experience</span>
@@ -126,7 +125,7 @@ export function HomeScreen({ time }: HomeScreenProps) {
                   title="Projects"
                   content={
                     <div className="text-white">
-                      <div className="text-xs text-blue-300 font-medium">FEATURED WORK</div>
+                      <div className="text-xs text-blue-300 font-medium"></div>
                       <div className="text-4xl font-light my-1">12+</div>
                       <div className="flex items-center gap-1 mt-1 text-xs">
                         <span className="text-gray-300">🚀</span>
@@ -206,7 +205,7 @@ export function HomeScreen({ time }: HomeScreenProps) {
         <AppIcon id="phone" name="Phone" color="bg-green-500" />
         <AppIcon id="safari" name="Safari" color="" />
         <AppIcon id="messages" name="Messages" color="" />
-        <AppIcon id="music" name="Music" color="" />
+        <AppIcon id="spotify" name="Spotify" color="" />
       </div>
     </div>
   )

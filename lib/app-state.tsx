@@ -3,13 +3,10 @@
 import { createContext, useContext, useState, type ReactNode } from "react"
 
 type AppState = {
-  isLocked: boolean
   currentApp: string | null
   controlCenterOpen: boolean
   openApp: (appId: string) => void
   closeApp: () => void
-  lockDevice: () => void
-  unlockDevice: () => void
   openControlCenter: () => void
   closeControlCenter: () => void
 }
@@ -17,7 +14,6 @@ type AppState = {
 const AppStateContext = createContext<AppState | undefined>(undefined)
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
-  const [isLocked, setIsLocked] = useState(false)
   const [currentApp, setCurrentApp] = useState<string | null>(null)
   const [controlCenterOpen, setControlCenterOpen] = useState(false)
 
@@ -27,15 +23,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const closeApp = () => {
     setCurrentApp(null)
-  }
-
-  const lockDevice = () => {
-    setIsLocked(true)
-    setCurrentApp(null)
-  }
-
-  const unlockDevice = () => {
-    setIsLocked(false)
   }
 
   const openControlCenter = () => {
@@ -49,13 +36,10 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   return (
     <AppStateContext.Provider
       value={{
-        isLocked,
         currentApp,
         controlCenterOpen,
         openApp,
         closeApp,
-        lockDevice,
-        unlockDevice,
         openControlCenter,
         closeControlCenter,
       }}

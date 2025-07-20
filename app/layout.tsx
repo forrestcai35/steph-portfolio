@@ -9,9 +9,8 @@ import { WallpaperProvider } from "@/lib/wallpaper-state"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "iPhone Interface",
-  description: "Interactive iPhone interface built with shadcn/ui and Tailwind CSS",
-    generator: 'v0.dev'
+  title: "Stephanie Portfolio",
+  description: "Stephanie Gao's Personal Portfolio",
 }
 
 export default function RootLayout({

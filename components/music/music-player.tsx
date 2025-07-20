@@ -49,158 +49,126 @@ export function MusicPlayer() {
     }
   }
 
-  // Handle song changes
+  // Update progress
   useEffect(() => {
-    if (!currentSong) return
+    const audio = audioRef.current
+    if (!audio) return
 
-    const setupAudio = async () => {
-      if (!audioRef.current) return
-
-      // Reset state
-      setProgress(0)
-      setAudioError(false)
-      setIsLoading(true)
-
-      try {
-        // Pause any current playback
-        audioRef.current.pause()
-
-        // Update audio source
-        audioRef.current.src = currentSong.audioUrl
-
-        // Add event listeners before loading
-        const loadPromise = new Promise((resolve, reject) => {
-          const loadedHandler = () => {
-            audioRef.current?.removeEventListener("canplaythrough", loadedHandler)
-            resolve(true)
-          }
-
-          const errorHandler = (e: Event) => {
-            audioRef.current?.removeEventListener("error", errorHandler)
-            console.error("Audio loading error:", e)
-            reject(new Error("Failed to load audio"))
-          }
-
-          audioRef.current?.addEventListener("canplaythrough", loadedHandler, { once: true })
-          audioRef.current?.addEventListener("error", errorHandler, { once: true })
-        })
-
-        audioRef.current.load()
-
-        // Wait for loading or error
-        await loadPromise
-
-        // If isPlaying is true, attempt to play the new song
-        if (isPlaying) {
-          await audioRef.current.play()
-        }
-      } catch (error) {
-        console.error("Audio setup error:", error)
-        setAudioError(true)
-        setIsPlaying(false)
-      } finally {
-        setIsLoading(false)
+    const updateProgress = () => {
+      if (audio.duration) {
+        setProgress((audio.currentTime / audio.duration) * 100)
       }
     }
 
-    setupAudio()
+    audio.addEventListener("timeupdate", updateProgress)
+    return () => audio.removeEventListener("timeupdate", updateProgress)
+  }, [currentSong])
 
-    // Cleanup function
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current.src = ""
-      }
+  // Handle song end
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    const handleSongEnd = () => {
+      setIsPlaying(false)
+      setProgress(0)
+    }
+
+    audio.addEventListener("ended", handleSongEnd)
+    return () => audio.removeEventListener("ended", handleSongEnd)
+  }, [setIsPlaying])
+
+  // Handle new song
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !currentSong) return
+
+    setAudioError(false)
+    audio.src = currentSong.audioUrl
+    audio.load()
+
+    if (isPlaying) {
+      audio.play().catch((error) => {
+        console.error("Auto-play failed:", error)
+        setIsPlaying(false)
+        setAudioError(true)
+      })
     }
   }, [currentSong, isPlaying, setIsPlaying])
 
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      const currentProgress = (audioRef.current.currentTime / audioRef.current.duration) * 100
-      setProgress(isNaN(currentProgress) ? 0 : currentProgress)
-    }
+  if (!currentSong) {
+    return (
+      <div className="h-16 bg-gray-900 border-t border-gray-800 flex items-center justify-center">
+        <p className="text-gray-400 text-sm">No song selected</p>
+      </div>
+    )
   }
-
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (audioRef.current && !audioError) {
-      const progressBar = e.currentTarget
-      const clickPosition = e.clientX - progressBar.getBoundingClientRect().left
-      const progressBarWidth = progressBar.clientWidth
-      const percentage = clickPosition / progressBarWidth
-
-      audioRef.current.currentTime = percentage * audioRef.current.duration
-    }
-  }
-
-  const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement>) => {
-    console.error("Audio error event triggered")
-    const audioElement = e.currentTarget
-    if (audioElement.error) {
-      console.error("Audio playback error:", audioElement.error.message)
-    }
-    setAudioError(true)
-    setIsPlaying(false)
-    setIsLoading(false)
-  }
-
-  if (!currentSong) return null
 
   return (
     <>
-      <div className="border-t bg-white p-4">
-        <audio
-          ref={audioRef}
-          onTimeUpdate={handleTimeUpdate}
-          onEnded={() => setIsPlaying(false)}
-          onError={handleAudioError}
-        />
-
-        <div className="flex items-center gap-4">
-          <img
-            src={currentSong.albumArt || "/placeholder.svg?height=48&width=48"}
-            alt={currentSong.title}
-            className="w-12 h-12 rounded-lg object-cover"
-            onError={(e) => {
-              e.currentTarget.src = "/placeholder.svg?height=48&width=48"
-            }}
+      <audio ref={audioRef} />
+      <div className="bg-gray-900 border-t border-gray-800 p-3">
+        {/* Progress Bar */}
+        <div className="w-full bg-gray-600 rounded-full h-1 mb-3">
+          <div
+            className="bg-[#1DB954] h-1 rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
           />
+        </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium truncate">{currentSong.title}</div>
-            <div className="text-xs text-gray-500 truncate">{currentSong.artist}</div>
-            {audioError && <div className="text-xs text-red-500">Unable to play this track</div>}
+        {/* Player Controls */}
+        <div className="flex items-center justify-between">
+          {/* Song Info */}
+          <div className="flex items-center flex-1 min-w-0">
+            <img
+              src={currentSong.albumArt || "/placeholder.svg?height=40&width=40"}
+              alt={currentSong.title}
+              className="w-10 h-10 rounded-md mr-3 object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/placeholder.svg?height=40&width=40"
+              }}
+            />
+            <div className="min-w-0 flex-1">
+              <h3 className="font-medium text-white text-sm truncate">{currentSong.title}</h3>
+              <p className="text-gray-400 text-xs truncate">{currentSong.artist}</p>
+            </div>
           </div>
 
+          {/* Controls */}
           <div className="flex items-center gap-4">
-            <button className="text-gray-400" onClick={() => setShowQueue(true)}>
-              <List className="h-5 w-5" />
-            </button>
-            <button className="text-gray-400">
-              <SkipBack className="h-6 w-6" />
+            <button className="text-gray-400 hover:text-white transition-colors">
+              <SkipBack className="h-5 w-5" />
             </button>
             <button
               onClick={togglePlayback}
-              className={`w-10 h-10 rounded-full ${audioError ? "bg-gray-400" : "bg-red-500"} text-white flex items-center justify-center`}
               disabled={isLoading || audioError}
+              className="bg-[#1DB954] text-black rounded-full p-2 hover:bg-[#1ed760] transition-colors disabled:opacity-50"
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
               ) : isPlaying ? (
-                <Pause className="h-5 w-5" />
+                <Pause className="h-4 w-4" />
               ) : (
-                <Play className="h-5 w-5" />
+                <Play className="h-4 w-4 ml-0.5" />
               )}
             </button>
-            <button className="text-gray-400">
-              <SkipForward className="h-6 w-6" />
+            <button className="text-gray-400 hover:text-white transition-colors">
+              <SkipForward className="h-5 w-5" />
+            </button>
+            <button
+              onClick={() => setShowQueue(true)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <List className="h-5 w-5" />
             </button>
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div className="mt-2 h-1 bg-gray-200 rounded-full overflow-hidden cursor-pointer" onClick={handleProgressClick}>
-          <div className="h-full bg-red-500 transition-all duration-100" style={{ width: `${progress}%` }} />
-        </div>
+        {audioError && (
+          <div className="mt-2 p-2 bg-red-900 border border-red-700 rounded text-red-200 text-xs">
+            Audio playback error. The track may not be available.
+          </div>
+        )}
       </div>
 
       {/* Queue View */}

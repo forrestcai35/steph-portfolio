@@ -51,7 +51,8 @@ export function AppView({ appId }: AppViewProps) {
         return <MessagesApp />
       case "safari":
         return <SafariApp />
-      case "music":
+
+      case "spotify":
         return <MusicApp />
       case "phone":
         return <PhoneApp />
@@ -65,7 +66,7 @@ export function AppView({ appId }: AppViewProps) {
     }
   }
 
-  const showHeader = !["camera", "messages", "photos", "notes", "safari", "phone"].includes(appId)
+  const showHeader = !["camera", "messages", "photos", "notes", "safari", "phone", "spotify"].includes(appId)
 
   return (
     <HomeIndicator>

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { LockScreen } from "@/components/lock-screen"
 import { HomeScreen } from "@/components/home-screen"
 import { AppView } from "@/components/app-view"
 import { useAppState } from "@/lib/app-state"
@@ -14,7 +13,7 @@ import { ControlCenter } from "@/components/control-center/control-center"
 import { SwipeDetector } from "@/components/swipe-detector"
 
 export default function IPhoneInterface() {
-  const { currentApp, isLocked, openControlCenter } = useAppState()
+  const { currentApp, openControlCenter } = useAppState()
   const [time, setTime] = useState(new Date())
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -38,7 +37,7 @@ export default function IPhoneInterface() {
           variant="outline"
           size="icon"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="rounded-full"
+          className="!rounded-full"
         >
           {theme === "dark" ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
           <span className="sr-only">Toggle theme</span>
@@ -46,14 +45,14 @@ export default function IPhoneInterface() {
       </div>
 
       {/* Portfolio name */}
-      <div className="absolute left-8 top-1/2 transform -translate-y-1/2 hidden lg:block">
+      <div className="absolute left-16 top-1/2 transform -translate-y-1/2 hidden lg:block">
         <h1
-          className="text-6xl font-bold text-gray-800 dark:text-gray-200 tracking-wide"
+          className="text-7xl font-bold text-gray-800 dark:text-gray-200 tracking-wide"
           style={{ fontFamily: "Brush Script MT, cursive" }}
         >
           Stephanie Gao
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mt-2 ml-2">Personal Portfolio</p>
+
       </div>
 
       {/* iPhone frame */}
@@ -61,23 +60,7 @@ export default function IPhoneInterface() {
         <SwipeDetector>
           <div className="relative h-full pt-12 overflow-hidden">
             <AnimatePresence mode="wait">
-              {isLocked ? (
-                <motion.div
-                  key="lock-screen"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute inset-0 rounded-[26px]"
-                  style={{
-                    backgroundImage: `url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iOS18-Azure-9Ax4tYYD2NK3Y9BWyohSWE63jMX9eo.webp)`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  <LockScreen time={time} />
-                </motion.div>
-              ) : currentApp ? (
+              {currentApp ? (
                 <motion.div
                   key={`app-${currentApp}`}
                   initial={{ opacity: 0, y: 20 }}

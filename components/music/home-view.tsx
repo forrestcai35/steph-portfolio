@@ -29,14 +29,14 @@ export function HomeView() {
   }
 
   return (
-    <div className="h-full overflow-auto">
+    <div className="h-full overflow-auto bg-black">
       <div className="px-4 pt-14 pb-4">
-        <h1 className="text-2xl font-bold">TonesChat</h1>
+        <h1 className="text-2xl font-bold text-white">Spotify</h1>
       </div>
 
       {/* Featured Section */}
       <div className="px-4 mb-6">
-        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-4 text-white">
+        <div className="bg-gradient-to-r from-[#1DB954] to-[#1ed760] rounded-xl p-4 text-white">
           <h2 className="text-sm font-medium mb-2">FEATURED PLAYLIST</h2>
           <div className="flex items-center">
             <img
@@ -48,88 +48,88 @@ export function HomeView() {
               }}
             />
             <div className="flex-1">
-              <h3 className="font-bold text-lg">{FEATURED_ALBUMS[0].title}</h3>
-              <p className="text-sm text-white/80">{FEATURED_ALBUMS[0].artist}</p>
-              <button
-                className="mt-2 bg-white text-red-500 px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1"
-                onClick={() => handleAlbumClick(FEATURED_ALBUMS[0].id)}
-              >
-                <Play className="h-3 w-3" /> Play
-              </button>
+              <h3 className="font-semibold text-lg">{FEATURED_ALBUMS[0].title}</h3>
+              <p className="text-white/80 text-sm">{FEATURED_ALBUMS[0].artist}</p>
+              <div className="flex items-center mt-2">
+                <button
+                  className="bg-white text-black rounded-full p-2 hover:scale-105 transition-transform"
+                  onClick={() => handleAlbumClick(FEATURED_ALBUMS[0].id)}
+                >
+                  <Play className="h-5 w-5 ml-0.5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Albums */}
-      <div className="px-4 pb-4">
-        <h2 className="text-lg font-semibold mb-3">Featured Albums</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {FEATURED_ALBUMS.map((album) => (
-            <div key={album.id} className="flex flex-col cursor-pointer" onClick={() => handleAlbumClick(album.id)}>
-              <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
-                <img
-                  src={album.artwork || "/placeholder.svg?height=200&width=200"}
-                  alt={album.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = "/placeholder.svg?height=200&width=200"
-                  }}
-                />
-              </div>
-              <div className="mt-2">
-                <h3 className="font-medium text-sm truncate">{album.title}</h3>
-                <p className="text-xs text-gray-500 truncate">{album.artist}</p>
-              </div>
+      {/* Recently Played */}
+      <div className="px-4 mb-6">
+        <h2 className="text-xl font-bold text-white mb-4">Recently Played</h2>
+        <div className="grid grid-cols-2 gap-3">
+          {FEATURED_ALBUMS.slice(0, 6).map((album) => (
+            <div
+              key={album.id}
+              className="bg-gray-800 rounded-lg p-3 cursor-pointer hover:bg-gray-700 transition-colors"
+              onClick={() => handleAlbumClick(album.id)}
+            >
+              <img
+                src={album.artwork || "/placeholder.svg?height=60&width=60"}
+                alt={album.title}
+                className="w-full aspect-square rounded-lg mb-2 object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.svg?height=60&width=60"
+                }}
+              />
+              <h3 className="font-medium text-white text-sm truncate">{album.title}</h3>
+              <p className="text-gray-400 text-xs truncate">{album.artist}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Recently Added */}
-      <div className="px-4 pb-4">
-        <h2 className="text-lg font-semibold mb-3">Recently Added</h2>
-        <div className="space-y-2">
-          {SAMPLE_SONGS.map((song) => (
-            <div key={song.id} className="flex items-center p-2 hover:bg-gray-100 rounded-lg cursor-pointer relative">
+      {/* Jump back in */}
+      <div className="px-4 mb-6">
+        <h2 className="text-xl font-bold text-white mb-4">Jump back in</h2>
+        <div className="space-y-3">
+          {SAMPLE_SONGS.slice(0, 5).map((song) => (
+            <div
+              key={song.id}
+              className="flex items-center p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer"
+              onClick={() => {
+                setCurrentSong(song)
+                setIsPlaying(true)
+              }}
+            >
               <img
-                src={song.albumArt || "/placeholder.svg?height=48&width=48"}
+                src={song.albumArt || "/placeholder.svg?height=50&width=50"}
                 alt={song.title}
                 className="w-12 h-12 rounded-lg mr-3 object-cover"
                 onError={(e) => {
-                  e.currentTarget.src = "/placeholder.svg?height=48&width=48"
+                  e.currentTarget.src = "/placeholder.svg?height=50&width=50"
                 }}
               />
-              <div
-                className="flex-1"
-                onClick={() => {
-                  setCurrentSong(song)
-                  setIsPlaying(true)
-                }}
-              >
-                <h3 className="font-medium text-sm">{song.title}</h3>
-                <p className="text-xs text-gray-500">{song.artist}</p>
+              <div className="flex-1">
+                <h3 className="font-medium text-white text-sm">{song.title}</h3>
+                <p className="text-gray-400 text-xs">{song.artist}</p>
               </div>
               <button
-                className="p-2"
+                className="p-2 text-gray-400 hover:text-white transition-colors"
                 onClick={(e) => {
                   e.stopPropagation()
                   setShowOptions(showOptions === song.id ? null : song.id)
                 }}
               >
-                <MoreVertical className="h-5 w-5 text-gray-400" />
+                <MoreVertical className="h-5 w-5" />
               </button>
-
-              {/* Options Menu */}
               {showOptions === song.id && (
-                <div className="absolute right-0 top-full mt-1 bg-white shadow-lg rounded-lg z-10 w-48">
-                  <div
-                    className="p-3 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
+                <div className="absolute right-4 mt-2 bg-gray-700 rounded-lg shadow-lg py-2 z-10">
+                  <button
+                    className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-600"
                     onClick={(e) => handleAddToQueue(song.id, e)}
                   >
-                    <Plus className="h-4 w-4" />
-                    <span className="text-sm">Add to Queue</span>
-                  </div>
+                    Add to queue
+                  </button>
                 </div>
               )}
             </div>

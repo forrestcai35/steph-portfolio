@@ -64,7 +64,7 @@ export function AppView({ appId }: AppViewProps) {
           <ArrowLeft className="h-6 w-6 text-white" />
         </button>
         <div className="flex gap-2">
-          <HomeIndicator />
+          <HomeIndicator><></></HomeIndicator>
         </div>
       </div>
       <div className="flex h-[calc(100%-44px)] w-full flex-col overflow-y-auto p-4">
